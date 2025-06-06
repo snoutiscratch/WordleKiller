@@ -1,9 +1,7 @@
-use std::ascii::AsciiExt;
 use std::fs::File;
+use std::io;
 use std::vec::Vec;
 use std::io::{BufRead, BufReader, Write};
-use std::str::Chars;
-use rustyline;
 
 fn main() {
     println!("Hai you dirty cheater!!");
@@ -15,8 +13,6 @@ fn main() {
     let mut possible: Vec<char> = Vec::new(); // Letters that are in the word
     let mut correct: [char;5] = [' ', ' ', ' ', ' ', ' ']; // Letters in the correct place
 
-    let mut rl = rustyline::DefaultEditor::new().unwrap();
-
     /* -------------------------------------- */
     /* Wordle for dirty cheaters!             */
     /* -------------------------------------- */
@@ -26,14 +22,15 @@ fn main() {
 
         // Display progress //
         print!("Correct: ");
-        for(i, c) in correct.iter().enumerate() {
+        for (_, c) in correct.iter().enumerate() {
             if *c == ' ' {
-                print!("- "); // Empty spaces
+                print!("- ");
             } else {
                 print!("{} ", c);
             }
         }
         println!();
+
 
         println!("Invalid: {}", not.iter().collect::<String>());
         println!("Possible: {}", possible.iter().collect::<String>());
@@ -45,14 +42,7 @@ fn main() {
         println!("2) POSSIBLE letters");
         println!("3) CORRECT position");
 
-        let choice = match rl.readline(">> ") {
-            Ok(line) => line,
-            Err(_) => {
-                println!("Error reading line!");
-                continue;
-            }
-        };
-
+        let choice = readline(">> ");
         match choice.as_str() {
             "1" => {
                 println!("Enter characters NOT in the word:");
@@ -76,6 +66,16 @@ fn main() {
     }
 }
 
+fn readline(prompt: &str) -> String {
+    println!("{}", prompt);
+    io::stdout().flush().unwrap(); // Make sure prompt shows immediately
+
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("Failed to read line");
+
+    input.trim_end().to_string() // Remove trailing newline
+}
+
 fn load_words(file: &str) -> Vec<String> {
     let file = File::open(file).expect("File no loady!!");
     let mut words: Vec<String> = Vec::new();
@@ -96,16 +96,9 @@ fn load_words(file: &str) -> Vec<String> {
 }
 
 fn input_chars(list: &mut Vec<char>) {
-    // Taking input
-    let mut rl = rustyline::DefaultEditor::new().unwrap();
-    let user_input = match rl.readline(">> ") {
-        Ok(line) => line,
-        Err(_) => {
-            "Line can't be read".to_string()
-        }
-    };
+    let user_input = readline(">> ");
 
-    // Parse into chars and push to list
+    // Parse into chars and push to a list
     for char in user_input.chars() {
         list.push(char);
     }
@@ -113,13 +106,7 @@ fn input_chars(list: &mut Vec<char>) {
 
 fn set_correct(array: &mut [char; 5]) {
     // Taking input
-    let mut rl = rustyline::DefaultEditor::new().unwrap();
-    let user_input = match rl.readline(">> ") {
-        Ok(line) => line,
-        Err(_) => {
-            "Line can't be read".to_string()
-        }
-    };
+    let user_input = readline("Correct >> ");
 
     let chars: Vec<char> = user_input.chars().collect();
     if chars.len() != 5 {

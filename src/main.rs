@@ -3,6 +3,10 @@ use std::io;
 use std::vec::Vec;
 use std::io::{BufRead, BufReader, Write};
 
+/* -------------------------------------- */
+/* Wordle for dirty cheaters!             */
+/* -------------------------------------- */
+
 fn main() {
     println!("Hai you dirty cheater!!");
 
@@ -13,12 +17,8 @@ fn main() {
     let mut possible: Vec<char> = Vec::new(); // Letters that are in the word
     let mut correct: [char;5] = [' ', ' ', ' ', ' ', ' ']; // Letters in the correct place
 
-    /* -------------------------------------- */
-    /* Wordle for dirty cheaters!             */
-    /* -------------------------------------- */
-
     loop {
-        println!();
+        println!("\n\n---======= :oo =======---");
 
         // Display progress //
         print!("Correct: ");
@@ -30,14 +30,11 @@ fn main() {
             }
         }
         println!();
-
-
         println!("Invalid: {}", not.iter().collect::<String>());
         println!("Possible: {}", possible.iter().collect::<String>());
 
-
         // Main menu //
-        println!("------- DATA ENTRY! -------");
+        println!("--=== DATA ENTRY");
         println!("1) NOT in word");
         println!("2) POSSIBLE letters");
         println!("3) CORRECT position");
@@ -62,9 +59,10 @@ fn main() {
             }
             _ => println!("NUH UH !!")
         }
-
     }
 }
+
+
 
 fn readline(prompt: &str) -> String {
     println!("{}", prompt);

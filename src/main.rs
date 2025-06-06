@@ -99,8 +99,11 @@ fn input_chars(list: &mut Vec<char>) {
     let user_input = readline(">> ");
 
     // Parse into chars and push to a list
-    for char in user_input.chars() {
-        list.push(char);
+    for c in user_input.chars() {
+        let c = c.to_ascii_lowercase(); // No caps
+        if !list.contains(&c) { // Duplicate prevention
+            list.push(c);
+        }
     }
 }
 

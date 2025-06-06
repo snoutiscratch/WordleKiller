@@ -1,14 +1,15 @@
+use std::ascii::AsciiExt;
 use std::fs::File;
 use std::vec::Vec;
 use std::io::{BufRead, BufReader, Write};
-
+use std::str::Chars;
 use rustyline;
 
 fn main() {
     println!("Hai you dirty cheater!!");
 
     let word_bank: Vec<String> = load_words("word_bank.txt");
-    let possible_words: Vec<String>;
+    let mut words: Vec<String> = word_bank;
 
     let mut not: Vec<char> = Vec::new(); // Letters not in the word
     let mut possible: Vec<char> = Vec::new(); // Letters that are in the word
@@ -29,7 +30,7 @@ fn main() {
             if *c == ' ' {
                 print!("- "); // Empty spaces
             } else {
-                print!("{}", c);
+                print!("{} ", c);
             }
         }
         println!();
@@ -63,7 +64,11 @@ fn main() {
             }
             "3" => {
                 println!("Enter the CORRECT positions of letters");
-                
+                set_correct(&mut correct);
+            }
+            "4" => {
+                solve(&mut words, &mut correct, &mut possible, &mut not);
+                println!("{:?}", words);
             }
             _ => println!("NUH UH !!")
         }
@@ -104,4 +109,60 @@ fn input_chars(list: &mut Vec<char>) {
     for char in user_input.chars() {
         list.push(char);
     }
+}
+
+fn set_correct(array: &mut [char; 5]) {
+    // Taking input
+    let mut rl = rustyline::DefaultEditor::new().unwrap();
+    let user_input = match rl.readline(">> ") {
+        Ok(line) => line,
+        Err(_) => {
+            "Line can't be read".to_string()
+        }
+    };
+
+    let chars: Vec<char> = user_input.chars().collect();
+    if chars.len() != 5 {
+        println!("Must be 5 characters long. Use spaces for blank or unknown.");
+        return;
+    }
+
+    for i in 0..5 {
+        array[i] = if chars[i] == ' ' { ' ' } else { chars[i].to_ascii_lowercase()};
+    }
+}
+
+fn solve(words: &mut Vec<String>, correct: &[char; 5], possible: &Vec<char>, not: &Vec<char>) {
+    words.retain(|word| {
+        let word_arr: [char;5] = word.chars()
+            .collect::<Vec<char>>()
+            .try_into()
+            .expect("Word must be 5 chars");
+
+        // 1) Check correct positions
+        for i in 0..5 {
+            if correct[i] != ' ' && correct[i] != word_arr[i] {
+                return false; // Remove word
+            }
+        }
+
+        // 2) Check all possible letters present somewhere
+        for &letter in possible {
+            if !word_arr.contains(&letter.to_ascii_lowercase()) {
+                return false; // Remove word
+            }
+        }
+
+        // 3) Check no forbidden letters
+        for &letter in not {
+            if word_arr.contains(&letter.to_ascii_lowercase()) {
+                return false; // Remove word
+            }
+        }
+
+        // Word passed all tests — keep it
+        true
+    });
+
+    println!("Filtered word bank.");
 }

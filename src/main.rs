@@ -32,6 +32,7 @@ fn main() {
         println!("n) NOT in word");
         println!("p) POSSIBLE letters");
         println!("c) CORRECT position");
+        println!("as) ALL SOLUTIONS");
         println!("rrr) RESET");
 
         let choice = wordle::readline(">> ");
@@ -47,6 +48,10 @@ fn main() {
             "c" => {
                 println!("Enter the CORRECT positions of letters");
                 s.set_correct();
+            }
+            "as" => {
+                s.solve();
+                println!("All Solutions: {:?}", s.words);
             }
             "rrr" => {
                 println!("RESETTING SOLVER!");

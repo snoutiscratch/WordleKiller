@@ -4,11 +4,13 @@ use std::io;
 use std::io::{BufRead, BufReader, Write};
 use std::vec::Vec;
 
+use crate::entropy::Entropy;
+
 pub struct Solver {
-    pub words: Vec<String>, // Possible words
-    pub correct: [char; 5], // Letters in the correct spot
-    pub yellows: Vec<[char; 5]>, // Letters that are in the word, but not in this spot
-    pub not: Vec<char>, // Letters not in the word
+    pub words: Vec<String>,         // Possible words
+    pub correct: [char; 5],         // Letters in the correct spot
+    pub yellows: Vec<[char; 5]>,    // Letters that are in the word, but not in this spot
+    pub not: Vec<char>,             // Letters not in the word
 }
 
 impl Solver {
@@ -27,9 +29,9 @@ impl Solver {
         let reader = BufReader::new(file);
 
         for cur_line in reader.lines() {
-            if let Ok(mut line) = cur_line { // Verify line can be read
-                line = line.to_lowercase(); // Ensure everything is lowercase
-                self.words.push(line); // Save line to vec
+            if let Ok(mut line) = cur_line {        // Verify line can be read
+                line = line.to_lowercase();                // Ensure everything is lowercase
+                self.words.push(line);                     // Save line to vec
             } else {
                 println!("Cannot read line!")
             }
@@ -42,8 +44,11 @@ impl Solver {
     // DISPLAY //
     pub fn display_overview(&mut self) {
         println!("\n\n---======= Overview =======---");
+
         // Show suggestions
-        println!("Suggested Guesses: {:?}", self.ranked_list());
+        self.filter(); // CLeans up list before running rankings
+        println!("Frequency based guesses: {:?}", self.frequency_rank());
+        println!("Entropy based guesses: {:?}", self.entropy_rank());
 
         // Hints
         println!("Invalid: {}", self.not.iter().collect::<String>());
@@ -176,12 +181,10 @@ impl Solver {
         println!("Word bank filtered.");
     }
 
-    pub fn ranked_list(&mut self) -> Vec<String> {
+    pub fn frequency_rank(&mut self) -> Vec<String> {
         let mut output: Vec<String> = Vec::new();
         let mut freq: HashMap<char, usize> = HashMap::new(); // Letter frequency
         let mut scored: Vec<(String, usize)> = Vec::new();
-
-        self.filter(); // Clean up the word bank before additional operations
 
         // Find letter frequency
         for word in self.words.iter() {
@@ -192,7 +195,6 @@ impl Solver {
         }
         
         // Rank words based on what has the most high-ranking letters
-        println!("Ranking word bank");
         for word in &self.words {
             let mut score = 0;
             let mut seen = HashSet::new();
@@ -210,6 +212,33 @@ impl Solver {
 
         // Sorting the ranks
         scored.sort_by(|a,b| b.1.cmp(&a.1));
+
+        // TOP 10 THINGS TO DO BEFORE YOU DIE!
+        let limit = if scored.len() < 10 { scored.len() } else { 10 };
+        for i in 0..limit {
+            output.push(scored[i].0.clone());
+        }
+        output
+    }
+
+    // Calculates word rankings based on entropy, which returns better guesses.
+    // COMPUTATIONALLY INTENSIVE: Use filter() to reduce the solution set's size.
+    pub fn entropy_rank(&mut self) -> Vec<String> {
+        let mut output: Vec<String> = Vec::new();
+        let mut scored: Vec<(String, f64)> = Vec::with_capacity(self.words.len()); // Store word and entropy score
+        let e = Entropy::new(&self.words);
+
+        // Calculate entropy for every word in solution set
+        for i in 0..self.words.len() {
+            let word = &self.words[i];
+            let entropy = e.calculate_entropy(word);
+            scored.push((word.clone(), entropy));
+        }
+
+        // Sort entropy by highest to lowest
+        scored.sort_by(|a, b| {
+            b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         // TOP 10 THINGS TO DO BEFORE YOU DIE!
         let limit = if scored.len() < 10 { scored.len() } else { 10 };

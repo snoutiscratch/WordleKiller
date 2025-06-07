@@ -14,7 +14,7 @@ fn main() {
         s.display_overview();
 
         // Main menu //
-        println!("--=== DATA ENTRY ===--");
+        println!("\n--=== DATA ENTRY ===--");
         println!("n) NOT in word");
         println!("y) POSSIBLE letters (Yellows)");
         println!("c) CORRECT position");

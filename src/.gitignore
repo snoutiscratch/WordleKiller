@@ -1,0 +1,40 @@
+# === Rust build artifacts ===
+/target/
+/Cargo.lock
+
+# If you're publishing a library, Cargo.lock should be included!
+# Uncomment the next line only if this is a binary application:
+# /Cargo.lock
+
+# === RustRover / JetBrains IDE ===
+.idea/
+*.iml
+
+# Optional: keep some helpful project config (safe defaults)
+# You can ignore only workspace-specific stuff like:
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/.name
+.idea/shelf/
+.idea/modules.xml
+
+# === OS / general tooling ===
+.DS_Store
+Thumbs.db
+
+# === Backup / swap / editor junk ===
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+*~
+
+# === Logs and debug ===
+*.log
+
+# === Test / coverage ===
+/coverage/
+*.profraw
+*.profdata

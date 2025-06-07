@@ -195,7 +195,6 @@ impl Solver {
         }
         
         // Rank words based on what has the most high-ranking letters
-        println!("Ranking filtered on letter frequency...");
         for word in &self.words {
             let mut score = 0;
             let mut seen = HashSet::new();
@@ -227,7 +226,7 @@ impl Solver {
     pub fn entropy_rank(&mut self) -> Vec<String> {
         let mut output: Vec<String> = Vec::new();
         let mut scored: Vec<(String, f64)> = Vec::with_capacity(self.words.len()); // Store word and entropy score
-        let e = Entropy::new(&self.words, &self.correct, &self.yellows, &self.not);
+        let e = Entropy::new(&self.words);
 
         // Calculate entropy for every word in solution set
         for i in 0..self.words.len() {

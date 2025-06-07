@@ -50,7 +50,9 @@ Correct >>  i
 
 ## Usage
 ### Setup
-Download or compile an executable. Place the executable alongside the `word_bank.txt` file. You may bring your own `word_bank.txt`, just make sure it's named exactly that.
+Download a release for your OS from [releases](https://github.com/snoutiscratch/WordleKiller/releases) or compile from source using `cargo build`.
+
+Place the executable alongside the `word_bank.txt` file. You may bring your own `word_bank.txt`, just make sure it's named exactly that.
 ```tree
 .
 └── WordleKiller

@@ -2,23 +2,14 @@ use std::collections::HashMap;
 
 pub struct Entropy<'a> { // entropy has no need for ownership. Everything will only last the lifetime of the instance.
     word_bank: &'a Vec<String>,        // candidate words to consider
-    correct: &'a [char; 5],            // green letters
-    yellows: &'a Vec<[char; 5]>,       // yellow letters with positional info
-    not: &'a Vec<char>,                // letters excluded
 }
 
 impl<'a> Entropy<'a> {
     pub fn new(
         word_bank: &'a Vec<String>,
-        correct: &'a [char; 5],
-        yellows: &'a Vec<[char; 5]>,
-        not: &'a Vec<char>
     ) -> Self {
         Self {
             word_bank,
-            correct,
-            yellows,
-            not
         }
     }
 

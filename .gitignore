@@ -1,1 +1,79 @@
-/target
+# === Rust build artifacts ===
+/target/
+**/*.rs.bk
+
+# === Cargo-specific ===
+/Cargo.lock      # Ignored for libraries, included for apps (see note below)
+/.cargo/
+.cargo-cache/
+
+# === Dependency debugging ===
+/*.crate
+
+# === IDEs & Editors ===
+
+# RustRover / IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# JetBrains IDEs often benefit from keeping run configs & shared settings
+# Keep if working in a team:
+# !.idea/runConfigurations/
+# !.idea/codeStyles/
+
+# === OS-specific cruft ===
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# === Logs and Debug output ===
+*.log
+*.out
+*.tmp
+*.bak
+*.swp
+*.swo
+*.old
+*.orig
+
+# === Test & coverage ===
+/coverage/
+/htmlcov/
+/*.profraw
+/*.profdata
+/cov-int/
+
+# === Build tool outputs ===
+/build/
+/dist/
+/pkg/
+
+# === Binary outputs ===
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+
+# === Environment files ===
+.env
+.env.*
+
+# === Rust Analyzer / Clippy caches ===
+.rustc_info.json
+.rustup/
+rust-project.json
+
+# === Custom project tooling ===
+# For example: if you use justfile or Makefile output
+*.tmpbuild
+*.gen.rs

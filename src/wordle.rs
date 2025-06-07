@@ -1,3 +1,4 @@
+use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, Write};
@@ -107,6 +108,49 @@ impl Solver {
 
         println!("Filtered word bank.");
     }
+
+    pub fn ranked_list(&mut self) -> Vec<String> {
+        let mut output: Vec<String> = Vec::new();
+        let mut freq: HashMap<char, usize> = HashMap::new(); // Letter frequency
+        let mut scored: Vec<(String, usize)> = Vec::new();
+
+        self.solve(); // Clean up the word bank before additional operations
+
+        // Find letter frequency
+        for word in self.words.iter() {
+            for c in word.chars() {
+                let counter = freq.entry(c).or_insert(0);
+                *counter += 1;
+            }
+        }
+        
+        // Rank words based on what has the most high-ranking letters
+        println!("Ranking word bank");
+        for word in &self.words {
+            let mut score = 0;
+            let mut seen = HashSet::new();
+            
+            for c in word.chars() {
+                if !seen.contains(&c) {
+                    seen.insert(c);
+                    if let Some(&count) = freq.get(&c) {
+                        score += count;
+                    }
+                }
+            }
+            scored.push((word.clone(), score))
+        }
+
+        // Sorting the ranks
+        scored.sort_by(|a,b| b.1.cmp((&a.1)));
+
+        // TOP 10 THINGS TO DO BEFORE YOU DIE!
+        let limit = if scored.len() < 10 { scored.len() } else { 10 };
+        for i in 0..limit {
+            output.push(scored[i].0.clone());
+        }
+        output
+    }
 }
 
 // Helpers //
@@ -117,5 +161,11 @@ pub fn readline(prompt: &str) -> String {
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("Failed to read line");
 
-    input.trim_end().to_string() // Remove trailing newline
+    // Don't trim end — just strip newline
+    if input.ends_with('\n') {
+        input.pop(); // removes `\n`
+        if input.ends_with('\r') { input.pop(); } // handles Windows `\r\n`
+    }
+    
+    return input;
 }

@@ -1,5 +1,4 @@
 use crate::wordle::Solver;
-
 mod wordle;
 
 /* -------------------------------------- */
@@ -7,12 +6,13 @@ mod wordle;
 /* -------------------------------------- */
 
 fn main() {
-    println!("Hai you dirty cheater!!");
-    let mut s = Solver::new();
+    let mut s:Solver = Solver::new();
     s.load_words("word_bank.txt");
 
     loop {
         println!("\n\n---======= :oo =======---");
+
+        println!("Suggested Guesses: {:?}", s.ranked_list());
 
         // Display progress //
         print!("Correct: ");
@@ -29,27 +29,29 @@ fn main() {
 
         // Main menu //
         println!("--=== DATA ENTRY");
-        println!("1) NOT in word");
-        println!("2) POSSIBLE letters");
-        println!("3) CORRECT position");
+        println!("n) NOT in word");
+        println!("p) POSSIBLE letters");
+        println!("c) CORRECT position");
+        println!("rrr) RESET");
 
         let choice = wordle::readline(">> ");
         match choice.as_str() {
-            "1" => {
+            "n" => {
                 println!("Enter characters NOT in the word:");
                 s.add_not();
             }
-            "2" => {
+            "p" => {
                 println!("Enter characters POSSIBLE in the word:");
                 s.add_possible()
             }
-            "3" => {
+            "c" => {
                 println!("Enter the CORRECT positions of letters");
                 s.set_correct();
             }
-            "4" => {
-                s.solve();
-                println!("{:?}", s.words);
+            "rrr" => {
+                println!("RESETTING SOLVER!");
+                s= Solver::new();
+                s.load_words("word_bank.txt");
             }
             _ => println!("NUH UH !!")
         }

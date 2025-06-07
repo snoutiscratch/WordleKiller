@@ -7,8 +7,8 @@ mod entropy;
 
 fn main() {
     let mut s:Solver = Solver::new();
-    s.load_words("word_bank.txt");
-
+    s.swap_file();
+    
     loop {
         // Display progress //
         s.display_overview();
@@ -18,6 +18,7 @@ fn main() {
         println!("n) NOT in word");
         println!("y) POSSIBLE letters (Yellows)");
         println!("c) CORRECT position");
+        println!("ss) Switch Source File");
         println!("as) ALL SOLUTIONS");
         println!("rr) RESET");
 
@@ -35,14 +36,17 @@ fn main() {
                 println!("Enter the CORRECT positions of letters");
                 s.set_correct();
             }
+            "ss" => {
+                println!("Switching source files. This should be done late game.");
+                s.swap_file();
+            }
             "as" => {
-                s.filter();
                 println!("All Solutions: {:?}", s.words);
             }
             "rr" => {
                 println!("RESETTING SOLVER!");
                 s= Solver::new();
-                s.load_words("word_bank.txt");
+                s.load_words("answers.txt");
             }
             _ => println!("NUH UH !!")
         }

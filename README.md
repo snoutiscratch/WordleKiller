@@ -44,6 +44,9 @@ cd ~/Downloads/WordleKiller/
 ```
 
 ## How calculation works
+### Word List Source
+The word list included with this solver was sourced from [cfreshman/wordle-answers-alphabetical.txt](https://gist.github.com/cfreshman/a03ef2cba789d8cf00c08f767e0fad7b)
+
 ### Narrowing
 For the best performance, the word list is narrowed as much as possible every cycle.
 

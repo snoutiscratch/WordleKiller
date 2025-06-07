@@ -1,6 +1,6 @@
 use crate::wordle::Solver;
 mod wordle;
-
+mod entropy;
 /* -------------------------------------- */
 /* Wordle for dirty cheaters!             */
 /* -------------------------------------- */

@@ -10,25 +10,11 @@ fn main() {
     s.load_words("word_bank.txt");
 
     loop {
-        println!("\n\n---======= :oo =======---");
-
-        println!("Suggested Guesses: {:?}", s.ranked_list());
-
         // Display progress //
-        print!("Correct: ");
-        for (_, c) in s.correct.iter().enumerate() {
-            if *c == ' ' {
-                print!("- ");
-            } else {
-                print!("{} ", c);
-            }
-        }
-        println!();
-        println!("Invalid: {}", s.not.iter().collect::<String>());
-        println!("Possible: {}", s.possible.iter().collect::<String>());
+        s.display_overview();
 
         // Main menu //
-        println!("--=== DATA ENTRY");
+        println!("--=== DATA ENTRY ===--");
         println!("n) NOT in word");
         println!("p) POSSIBLE letters");
         println!("c) CORRECT position");
@@ -60,5 +46,7 @@ fn main() {
             }
             _ => println!("NUH UH !!")
         }
+        
+        s.rounds+=1;
     }
 }

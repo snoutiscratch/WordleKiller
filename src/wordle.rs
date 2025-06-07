@@ -5,10 +5,11 @@ use std::io::{BufRead, BufReader, Write};
 use std::vec::Vec;
 
 pub struct Solver {
-    pub words: Vec<String>,
-    pub correct: [char; 5],
-    pub possible: Vec<char>,
-    pub not: Vec<char>,
+    pub words: Vec<String>, // Possible words
+    pub correct: [char; 5], // Letters in the correct spot
+    pub possible: [[char; 5]; 6], // Letters that are in the word, but not in this spot
+    pub not: Vec<char>, // Letters not in the word
+    pub rounds: u8, // Number of rounds played
 }
 
 impl Solver {
@@ -17,8 +18,9 @@ impl Solver {
         Self {
             words: Vec::new(),
             correct: [' '; 5],
-            possible: Vec::new(),
+            possible: [[' '; 5]; 6],
             not: Vec::new(),
+            rounds: 0,
         }
     }
 
@@ -39,6 +41,51 @@ impl Solver {
 
     }
 
+    // DISPLAY //
+    pub fn display_overview(&mut self) {
+        println!("\n\n---======= Overview =======---");
+        // Show suggestions
+        println!("Suggested Guesses: {:?}", self.ranked_list());
+
+        // Display correct
+        print!("Correct: ");
+        for (_, c) in self.correct.iter().enumerate() {
+            if *c == ' ' {
+                print!("- ");
+            } else {
+                print!("{} ", c);
+            }
+        }
+
+        // Show Yellows (possible letters)
+        println!("\nYellows");
+        println!("{:?}", self.display_yellows());
+
+        // Invalid
+        println!("Invalid: {}", self.not.iter().collect::<String>());
+    }
+
+    fn display_yellows(&mut self) -> String {
+        let mut out = String::new();
+
+        let matrix: [[char; 5]; 6] = self.possible;
+        for i in 0..6 { // traverse the matrix
+            out.push_str("[ ");
+            for j in 0..5 {
+                let c = matrix[i][j]; // fetch character and filter
+                if c == ' ' {
+                    out.push('-');
+                } else {
+                    out.push(c);
+                }
+            }
+            out.push_str(" ]");
+        }
+
+        return out
+    }
+
+
     // Manipulation //
     fn add_chars(list: &mut Vec<char>) {
         let user_input = readline(">> ");
@@ -55,7 +102,11 @@ impl Solver {
         Self::add_chars(&mut self.not);
     }
     pub fn add_possible(&mut self) {
-        Self::add_chars(&mut self.possible);
+        for i in 0..6 {
+            for j in 0..5 {
+                self.possible[i][j] = ' ';
+            }
+        }
     }
 
     pub fn set_correct(&mut self) {
@@ -89,9 +140,11 @@ impl Solver {
             }
 
             // 2) Check all possible letters present somewhere
-            for letter in self.possible.iter() {
-                if !word_arr.contains(&letter.to_ascii_lowercase()) {
-                    return false; // Remove word
+            for row in self.possible.iter() {
+                for &letter in row.iter() {
+                    if letter != ' ' && !word_arr.contains(&letter) {
+                        return false; // Remove word
+                    }
                 }
             }
 
@@ -142,7 +195,7 @@ impl Solver {
         }
 
         // Sorting the ranks
-        scored.sort_by(|a,b| b.1.cmp((&a.1)));
+        scored.sort_by(|a,b| b.1.cmp(&a.1));
 
         // TOP 10 THINGS TO DO BEFORE YOU DIE!
         let limit = if scored.len() < 10 { scored.len() } else { 10 };

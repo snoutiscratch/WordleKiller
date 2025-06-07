@@ -10,30 +10,16 @@ fn main() {
     s.load_words("word_bank.txt");
 
     loop {
-        println!("\n\n---======= :oo =======---");
-
-        println!("Suggested Guesses: {:?}", s.ranked_list());
-
         // Display progress //
-        print!("Correct: ");
-        for (_, c) in s.correct.iter().enumerate() {
-            if *c == ' ' {
-                print!("- ");
-            } else {
-                print!("{} ", c);
-            }
-        }
-        println!();
-        println!("Invalid: {}", s.not.iter().collect::<String>());
-        println!("Possible: {}", s.possible.iter().collect::<String>());
+        s.display_overview();
 
         // Main menu //
-        println!("--=== DATA ENTRY");
+        println!("--=== DATA ENTRY ===--");
         println!("n) NOT in word");
-        println!("p) POSSIBLE letters");
+        println!("y) POSSIBLE letters (Yellows)");
         println!("c) CORRECT position");
         println!("as) ALL SOLUTIONS");
-        println!("rrr) RESET");
+        println!("rr) RESET");
 
         let choice = wordle::readline(">> ");
         match choice.as_str() {
@@ -41,19 +27,19 @@ fn main() {
                 println!("Enter characters NOT in the word:");
                 s.add_not();
             }
-            "p" => {
+            "y" => {
                 println!("Enter characters POSSIBLE in the word:");
-                s.add_possible()
+                s.add_yellows()
             }
             "c" => {
                 println!("Enter the CORRECT positions of letters");
                 s.set_correct();
             }
             "as" => {
-                s.solve();
+                s.filter();
                 println!("All Solutions: {:?}", s.words);
             }
-            "rrr" => {
+            "rr" => {
                 println!("RESETTING SOLVER!");
                 s= Solver::new();
                 s.load_words("word_bank.txt");

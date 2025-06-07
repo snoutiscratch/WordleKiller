@@ -2,7 +2,6 @@ use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, Write};
-use std::process::Output;
 use std::vec::Vec;
 
 use crate::entropy::Entropy;
@@ -227,11 +226,26 @@ impl Solver {
     // COMPUTATIONALLY INTENSIVE: Use filter() to reduce the solution set's size.
     pub fn entropy_rank(&mut self) -> Vec<String> {
         let mut output: Vec<String> = Vec::new();
+        let mut scored: Vec<(String, f64)> = Vec::with_capacity(self.words.len()); // Store word and entropy score
         let e = Entropy::new(&self.words, &self.correct, &self.yellows, &self.not);
 
+        // Calculate entropy for every word in solution set
+        for i in 0..self.words.len() {
+            let word = &self.words[i];
+            let entropy = e.calculate_entropy(word);
+            scored.push((word.clone(), entropy));
+        }
 
+        // Sort entropy by highest to lowest
+        scored.sort_by(|a, b| {
+            b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         // TOP 10 THINGS TO DO BEFORE YOU DIE!
+        let limit = if scored.len() < 10 { scored.len() } else { 10 };
+        for i in 0..limit {
+            output.push(scored[i].0.clone());
+        }
         output
     }
 }

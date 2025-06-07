@@ -54,4 +54,6 @@ Calculated by figuring out the most common letters in a list of possible words g
 
 The more common letters a word has, the higher its rank on the suggested guess list.
 
+---
+
 <small>this is the first useful-ish program I made in rust, pls don't be mean</small>

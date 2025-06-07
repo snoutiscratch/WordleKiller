@@ -53,3 +53,5 @@ The order is as follows: Correct -> Possible letters -> Letters not in word.
 Calculated by figuring out the most common letters in a list of possible words given hints.
 
 The more common letters a word has, the higher its rank on the suggested guess list.
+
+<small>this is the first useful-ish program I made in rust, pls don't be mean</small>

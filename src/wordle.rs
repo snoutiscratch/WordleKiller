@@ -155,7 +155,7 @@ impl Solver {
 
 // Helpers //
 pub fn readline(prompt: &str) -> String {
-    println!("{}", prompt);
+    print!("{}", prompt);
     io::stdout().flush().unwrap(); // Make sure prompt shows immediately
 
     let mut input = String::new();

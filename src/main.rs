@@ -7,8 +7,8 @@ mod entropy;
 
 fn main() {
     let mut s:Solver = Solver::new();
-    s.swap_file();
-    
+    s.load_words("allowed.txt");
+
     loop {
         // Display progress //
         s.display_overview();
@@ -46,7 +46,7 @@ fn main() {
             "rr" => {
                 println!("RESETTING SOLVER!");
                 s= Solver::new();
-                s.load_words("answers.txt");
+                s.load_words("allowed.txt");
             }
             _ => println!("NUH UH !!")
         }
